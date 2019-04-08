@@ -1,26 +1,134 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    android:orientation="vertical"
+    android:background="#FFF3E0"
+    tools:context="com.krystian.guitartuner.MainActivity">
 
-    <TextView
+
+
+    <TextView android:id="@+id/which_string_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Drequency" />
+        android:layout_margin="16dp"
+        android:textStyle="bold"
+        android:textSize="36sp"
+        android:textColor="@color/guitarNeck"
+        android:text="@string/which_string_text" />
 
-    <TextView
+    <TextView android:id="@+id/detuning_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="String" />
+        android:layout_marginTop="60dp"
+        android:layout_marginLeft="16dp"
+        android:text="@string/detuning_value"
+        android:textStyle="bold"
+        android:textSize="36sp"
+        android:textColor="@color/guitarNeck" />
 
-    <Button android:id="@+id/tune_button"
+    <TextView android:id="@+id/arrow"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Tune" />
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="100dp"
+        android:textColor="@color/buttonGradientEnd"
+        android:textSize="80sp" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_gravity="center_vertical"
+        android:background="@color/guitarNeck" >
+
+        <View
+            android:layout_width="4dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="right"
+            android:background="@color/fretColor"/>
+
+        <View
+            android:layout_width="4dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="right"
+            android:layout_marginRight="64dp"
+            android:background="@color/fretColor"/>
+
+        <View
+            android:layout_width="4dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="right"
+            android:layout_marginRight="128dp"
+            android:background="@color/fretColor"/>
+
+        <View
+            android:layout_width="4dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="right"
+            android:layout_marginRight="192dp"
+            android:background="@color/fretColor"/>
+
+        <View
+            android:layout_width="4dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="right"
+            android:layout_marginRight="256dp"
+            android:background="@color/fretColor"/>
+
+        <View
+            android:layout_width="4dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="right"
+            android:layout_marginRight="320dp"
+            android:background="@color/fretColor"/>
+
+        <View android:id="@+id/E_string"
+            android:layout_width="match_parent"
+            android:layout_height="4dp"
+            android:layout_marginTop="10.9dp"
+            android:background="@color/stringView"/>
+
+        <View android:id="@+id/A_string"
+            android:layout_width="match_parent"
+            android:layout_height="4dp"
+            android:layout_marginTop="25.7dp"
+            android:background="@color/stringView"/>
+
+        <View android:id="@+id/d_string"
+            android:layout_width="match_parent"
+            android:layout_height="4dp"
+            android:layout_marginTop="40.6dp"
+            android:background="@color/stringView"/>
+
+        <View android:id="@+id/g_string"
+            android:layout_width="match_parent"
+            android:layout_height="4dp"
+            android:layout_marginTop="55.4dp"
+            android:background="@color/stringView"/>
+
+        <View android:id="@+id/h_string"
+            android:layout_width="match_parent"
+            android:layout_height="4dp"
+            android:layout_marginTop="70.3dp"
+            android:background="@color/stringView"/>
+
+        <View android:id="@+id/e1_string"
+            android:layout_width="match_parent"
+            android:layout_height="4dp"
+            android:layout_marginTop="85.1dp"
+            android:background="@color/stringView" />
+
+    </FrameLayout>
+
+    <Button android:id="@+id/start_tuning"
+        android:layout_marginBottom="50dp"
+        android:layout_gravity="center_horizontal|bottom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/guitarpick"
+        android:text="@string/start_tuning" />
 
 
-
-</LinearLayout>
+</FrameLayout>

@@ -1,3 +1,11 @@
 <resources>
-    <string name="app_name">Tuner - demo</string>
+    <string name="app_name">Guitar Tuner</string>
+
+    <!--MainActivity -->
+    <string name="which_string_text">Struna: %1$s</string>
+    <string name="detuning_value">Rozstrojenie: %1$d Hz</string>
+    <string name="start_tuning">Nastrój</string>
+    <string name="arrow_up">\u21E7</string>
+    <string name="arrow_down">\u21E9</string>
+
 </resources>
