@@ -10,16 +10,12 @@ public class SignalProcessing {
     private static final int SAMPLE_RATE = 8000; //Hz
     private static final int MIN_BUFFER = AudioRecord.getMinBufferSize(SAMPLE_RATE, AudioFormat.CHANNEL_IN_MONO,
             AudioFormat.ENCODING_PCM_16BIT);
-    private static final AudioRecord AUDIO_RECORD = new AudioRecord(MediaRecorder.AudioSource.MIC, SAMPLE_RATE,
+    public static final AudioRecord AUDIO_RECORD = new AudioRecord(MediaRecorder.AudioSource.MIC, SAMPLE_RATE,
             AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT, MIN_BUFFER);
     private static final int THRESHOLD = 500; /*start calculating Fourier transform if a sound is louder
                                                 than threshold; in 16-bit encoding  */
 
     public SignalProcessing() {
-    }
-
-    public int getState() {
-        return AUDIO_RECORD.getState();
     }
 
     public void startRecording() {
@@ -28,15 +24,20 @@ public class SignalProcessing {
 
     public boolean isSound() {
         short[] listeningBuffer = new short[32];
-        short maxValue = 0;
         AUDIO_RECORD.read(listeningBuffer, 0, listeningBuffer.length);
         for(short buff : listeningBuffer) {
-            if(Math.abs(buff) > maxValue) maxValue = (short) Math.abs(buff);
+            if(Math.abs(buff) > THRESHOLD) return true;
         }
-        return maxValue > THRESHOLD;
+        return false;
     }
 
-    public void record() {
+    public void getRecorderState() {
+        int state = AUDIO_RECORD.getState();
+        //AUDIO_RECORD.getState() = AUDIO_RECORD.
+        Log.v("State", String.valueOf(state));
+    }
+
+    public short[] record() {
 
         short[] buffer = new short[100]; //small chunk - no risk to get zeros in 300+ elements
         int numberOfBufferChunks = 10; //1000 samples of a signal is enough (given 8k frequency rate) to transform it properly
@@ -50,21 +51,16 @@ public class SignalProcessing {
         int numberOfCopies = fullSignal.length / signal.length;
         for(int i=0; i<numberOfCopies; i++)
             System.arraycopy(signal, 0, fullSignal, 0, signal.length);
-        calculateDFT(fullSignal);
+        return fullSignal;
+        //calculateDFT(fullSignal);
     }
 
-    public void calculateDFT(short[] signal) {
+    public Object[] calculateDFT(short[] signal) {
+
+        /*
         int minFourier = 0, maxFourier = 400; //there's nothing interesting above 400 Hz - last string's frequency is 330 Hz
         double[] fourier = new double[maxFourier - minFourier];
-/*
-        double[] signal = new double[SAMPLE_RATE];  DFT works
-        double[] t = new double[signal.length];
-        double f1 = 300;
-        for(int i=0; i<t.length; i++) {
-            t[i] = (double) i / SAMPLE_RATE;
-            signal[i] = 1*Math.sin(2*Math.PI*f1*t[i]); //signal
-        }
-*/
+
         double max = 0;
         int maxFrequency = 0;
         for(int k=minFourier; k<maxFourier; k++) { //number of fourier lines
@@ -81,26 +77,57 @@ public class SignalProcessing {
                 maxFrequency = k; //frequency with highest amplitude yet
             }
         }
+        */
+        int maxFrequencyMeasured = 400;
+        double[][] fftArg = new double[maxFrequencyMeasured][maxFrequencyMeasured];
+        double[] realisPart = new double[maxFrequencyMeasured];
+        double[] imaginarisPart = new double[maxFrequencyMeasured];
 
-        detectPeaks(fourier, maxFrequency);
+        double[] fftResult = new double[maxFrequencyMeasured];
+        int[] frequencies = new int[maxFrequencyMeasured];
+        //peaks[0] = 0; peaks[1] = 0; peaks[2] = 0; peaks[3] = 0;
+        double maxAmplitude = 0;
+        int hpf = 0;
+        for( int k = 0; k < maxFrequencyMeasured ; k++) {
+            realisPart[k] = 0;
+            imaginarisPart[k] = 0;
+
+            for (int n = 0; n < maxFrequencyMeasured; n++) {
+                fftArg[k][n] = -2 * Math.PI * k * n / signal.length; //bigBufferSize
+                realisPart[k] += signal[n] * Math.cos(fftArg[k][n]);  //bigBuffer
+                imaginarisPart[k] += signal[n] * Math.sin(fftArg[k][n]); //bigBuffer
+            }
+
+            fftResult[k] = Math.sqrt(realisPart[k] * realisPart[k] + imaginarisPart[k] * imaginarisPart[k]);
+            frequencies[k] = k;
+
+            //Log.v("fftResult " + k, "" + fftResult[k]);
+
+            if (fftResult[k] > maxAmplitude) {
+                maxAmplitude = fftResult[k];
+                hpf = frequencies[k];
+            }
+        }
+        return new Object[]{fftResult, hpf};
     }
 
-    public void detectPeaks(double[] fftResult, int hpf) { //highestPeakFrequency (with highest amplitude)
+    public int[] detectPeaks(double[] fftResult) { //highestPeakFrequency (frequency with highest amplitude)
         int maxFrequencyMeasured = 400;
         int[] peaks = new int[4]; //max four peaks in 0-400 Hz (main one and higher harmonics) to detect which string is it
-        WhichString whichString;
 
-        for(int k=90; k < maxFrequencyMeasured-40; k++) {
+
+        for (int k = 90; k < maxFrequencyMeasured - 40; k++) {
             int thisMayBePeak = 0;
-            for(int i = 1; i <= 40; i++) { //peak width (to eliminate places with slightly louder noise)
-                if( fftResult[k] > fftResult[k-i] && fftResult[k] > fftResult[k+i]) thisMayBePeak++;
+            for (int i = 1; i <= 40; i++) { //peak width (to eliminate places with slightly louder noise)
+                if (fftResult[k] > fftResult[k - i] && fftResult[k] > fftResult[k + i])
+                    thisMayBePeak++;
             }
-            if(thisMayBePeak == 40) {
-                if(peaks[0]==0) peaks[0] = k;
+            if (thisMayBePeak == 40) {
+                if (peaks[0] == 0) peaks[0] = k;
                 else {
-                    if(peaks[1]==0) peaks[1] = k;
+                    if (peaks[1] == 0) peaks[1] = k;
                     else {
-                        if(peaks[2]==0) peaks[2] = k;
+                        if (peaks[2] == 0) peaks[2] = k;
                         else {
                             peaks[3] = k;
                         }
@@ -108,7 +135,12 @@ public class SignalProcessing {
                 }
             }
         }
-        Log.v("Peaks", ""+peaks[0]+ " "+peaks[1]+ " "+peaks[2]+" "+peaks[3]);
+        return peaks;
+    }
+
+    public WhichString detectString(int hpf, int[] peaks) {
+        WhichString whichString;
+
         if( peaks[0] > 0.9*164 && peaks[0] < 1.1*164 && peaks[1] > 0.9*246 && peaks[1] < 1.1*246)
             whichString = WhichString.E; //(M)164, (M)246, (328)
         else if( peaks[0] > 0.9*110 && peaks[0] < 1.1*110 && peaks[1] > 0.9*220 && peaks[1] < 1.1*220 && hpf < 240)
@@ -122,10 +154,11 @@ public class SignalProcessing {
         else if( hpf > 0.9*330 && hpf < 1.1*330)
             whichString = WhichString.e1; //(110) 220 M330
         else whichString = WhichString.none;
-        tune(whichString, hpf);
+
+        return whichString;
     }
 
-    public void tune(WhichString whichString, int hpf) {
+    public int tune(WhichString whichString, int hpf, int[] peaks) {
 
         int desiredFrequency;
         int detuning = 0;
@@ -133,78 +166,40 @@ public class SignalProcessing {
             case e1:
                 desiredFrequency = 330;
                 detuning = desiredFrequency - hpf;
-                //e1String.setBackgroundColor(getResources().getColor(R.color.buttonGradientEnd));
                 break;
             case h:
                 desiredFrequency = 247;
                 detuning = desiredFrequency - hpf;
-                //hString.setBackgroundColor(getResources().getColor(R.color.buttonGradientEnd));
                 break;
             case g:
                 desiredFrequency = 197;
                 if(hpf <240) detuning = desiredFrequency - hpf;
                 else detuning = desiredFrequency - hpf/2;
-                //gString.setBackgroundColor(getResources().getColor(R.color.buttonGradientEnd));
                 break;
             case d:
                 desiredFrequency = 147;
-                //detuning = desiredFrequency - peaks[0];
-                //dString.setBackgroundColor(getResources().getColor(R.color.buttonGradientEnd));
+                detuning = desiredFrequency - peaks[0];
                 break;
             case A:
                 desiredFrequency = 110;
-                //detuning = desiredFrequency - peaks[0];
-                //AString.setBackgroundColor(getResources().getColor(R.color.buttonGradientEnd));
+                detuning = desiredFrequency - peaks[0];
                 break;
             case E:
                 desiredFrequency = 82;
-                //detuning = desiredFrequency - peaks[0]/2;
-                //EString.setBackgroundColor(getResources().getColor(R.color.buttonGradientEnd));
+                detuning = desiredFrequency - peaks[0]/2;
                 break;
             case none:
                 desiredFrequency = 0;
                 detuning = 0;
         }
-
-        Log.v("Which string", ""+whichString);
-        Log.v("Detuning", ""+detuning);
-/*
-        if(detuning>0) arrowText.setText(getString(R.string.arrow_up));//strzałka w górę
-        else if(detuning < 0) arrowText.setText(getString(R.string.arrow_down));//strzałka w dół
-        else arrowText.setText("");
-
-        detuning = Math.abs(detuning);
-
-        whichStringText.setText(getString(R.string.which_string_text, whichString));
-        whichStringText.setTextColor(getResources().getColor(R.color.buttonGradientEnd));
-        detuningValueText.setText(getString(R.string.detuning_value, detuning));
-        switch(detuning) {
-            case 0:
-                detuningValueText.setTextColor(getResources().getColor(R.color.detuning_0));
-                break;
-            case 1:
-            case 2:
-                detuningValueText.setTextColor(getResources().getColor(R.color.detuning_2));
-                break;
-            case 3:
-            case 4:
-                detuningValueText.setTextColor(getResources().getColor(R.color.detuning_4));
-                break;
-            case 5:
-            case 6:
-                detuningValueText.setTextColor(getResources().getColor(R.color.detuning_6));
-                break;
-            case 7:
-            case 8:
-            default:
-                detuningValueText.setTextColor(getResources().getColor(R.color.detuning_8));
-                break;
-        }
-*/
+        return detuning;
     }
 
     public void stopRecording() {
         AUDIO_RECORD.stop();
+    }
+
+    public void releaseRecorder() {
         AUDIO_RECORD.release();
     }
 }

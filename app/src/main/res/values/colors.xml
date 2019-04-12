@@ -4,6 +4,8 @@
     <color name="colorPrimaryDark">#5d4037</color>
     <color name="colorAccent">#30ff6817</color>
 
+    <color name="backgroundColor">#FFF3E0</color>
+
     <color name="stringView">#C0C0C0</color>
     <color name="buttonGradientEnd">#D38132</color>
     <color name="guitarNeck">#303030</color>
@@ -14,4 +16,6 @@
     <color name="detuning_4">#FFC107</color>
     <color name="detuning_6">#EF6C00</color>
     <color name="detuning_8">#F44336</color>
+
+    <color name="recording_dot">#FF2222</color>
 </resources>

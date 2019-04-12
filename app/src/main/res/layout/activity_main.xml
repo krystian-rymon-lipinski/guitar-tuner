@@ -4,32 +4,34 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/backgroundColor"
     android:orientation="vertical"
-    android:background="#FFF3E0"
     tools:context="com.krystian.guitartuner.MainActivity">
 
 
-
-    <TextView android:id="@+id/which_string_text"
+    <TextView
+        android:id="@+id/which_string_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
-        android:textStyle="bold"
-        android:textSize="36sp"
+        android:text="@string/which_string_text"
         android:textColor="@color/guitarNeck"
-        android:text="@string/which_string_text" />
+        android:textSize="36sp"
+        android:textStyle="bold" />
 
-    <TextView android:id="@+id/detuning_text"
+    <TextView
+        android:id="@+id/detuning_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="60dp"
         android:layout_marginLeft="16dp"
+        android:layout_marginTop="60dp"
         android:text="@string/detuning_value"
-        android:textStyle="bold"
+        android:textColor="@color/guitarNeck"
         android:textSize="36sp"
-        android:textColor="@color/guitarNeck" />
+        android:textStyle="bold" />
 
-    <TextView android:id="@+id/arrow"
+    <TextView
+        android:id="@+id/arrow"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
@@ -41,80 +43,86 @@
         android:layout_width="match_parent"
         android:layout_height="100dp"
         android:layout_gravity="center_vertical"
-        android:background="@color/guitarNeck" >
+        android:background="@color/guitarNeck">
 
         <View
             android:layout_width="4dp"
             android:layout_height="match_parent"
             android:layout_gravity="right"
-            android:background="@color/fretColor"/>
+            android:background="@color/fretColor" />
 
         <View
             android:layout_width="4dp"
             android:layout_height="match_parent"
             android:layout_gravity="right"
             android:layout_marginRight="64dp"
-            android:background="@color/fretColor"/>
+            android:background="@color/fretColor" />
 
         <View
             android:layout_width="4dp"
             android:layout_height="match_parent"
             android:layout_gravity="right"
             android:layout_marginRight="128dp"
-            android:background="@color/fretColor"/>
+            android:background="@color/fretColor" />
 
         <View
             android:layout_width="4dp"
             android:layout_height="match_parent"
             android:layout_gravity="right"
             android:layout_marginRight="192dp"
-            android:background="@color/fretColor"/>
+            android:background="@color/fretColor" />
 
         <View
             android:layout_width="4dp"
             android:layout_height="match_parent"
             android:layout_gravity="right"
             android:layout_marginRight="256dp"
-            android:background="@color/fretColor"/>
+            android:background="@color/fretColor" />
 
         <View
             android:layout_width="4dp"
             android:layout_height="match_parent"
             android:layout_gravity="right"
             android:layout_marginRight="320dp"
-            android:background="@color/fretColor"/>
+            android:background="@color/fretColor" />
 
-        <View android:id="@+id/E_string"
+        <View
+            android:id="@+id/E_string"
             android:layout_width="match_parent"
             android:layout_height="4dp"
             android:layout_marginTop="10.9dp"
-            android:background="@color/stringView"/>
+            android:background="@color/stringView" />
 
-        <View android:id="@+id/A_string"
+        <View
+            android:id="@+id/A_string"
             android:layout_width="match_parent"
             android:layout_height="4dp"
             android:layout_marginTop="25.7dp"
-            android:background="@color/stringView"/>
+            android:background="@color/stringView" />
 
-        <View android:id="@+id/d_string"
+        <View
+            android:id="@+id/d_string"
             android:layout_width="match_parent"
             android:layout_height="4dp"
             android:layout_marginTop="40.6dp"
-            android:background="@color/stringView"/>
+            android:background="@color/stringView" />
 
-        <View android:id="@+id/g_string"
+        <View
+            android:id="@+id/g_string"
             android:layout_width="match_parent"
             android:layout_height="4dp"
             android:layout_marginTop="55.4dp"
-            android:background="@color/stringView"/>
+            android:background="@color/stringView" />
 
-        <View android:id="@+id/h_string"
+        <View
+            android:id="@+id/h_string"
             android:layout_width="match_parent"
             android:layout_height="4dp"
             android:layout_marginTop="70.3dp"
-            android:background="@color/stringView"/>
+            android:background="@color/stringView" />
 
-        <View android:id="@+id/e1_string"
+        <View
+            android:id="@+id/e1_string"
             android:layout_width="match_parent"
             android:layout_height="4dp"
             android:layout_marginTop="85.1dp"
@@ -122,11 +130,12 @@
 
     </FrameLayout>
 
-    <Button android:id="@+id/start_tuning"
-        android:layout_marginBottom="50dp"
-        android:layout_gravity="center_horizontal|bottom"
+    <Button
+        android:id="@+id/start_tuning"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal|bottom"
+        android:layout_marginBottom="50dp"
         android:background="@drawable/guitarpick"
         android:text="@string/start_tuning" />
 
